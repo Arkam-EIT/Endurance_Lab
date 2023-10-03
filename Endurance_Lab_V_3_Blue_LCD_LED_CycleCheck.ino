@@ -4,7 +4,7 @@
 #include <Keypad.h>
 #include <Wire.h>
 
-//Defines
+// Defines
 #define I2C_Addr 0x20                             // I2C Address of PCF8574-board: 0x20 - 0x27
 #define RELAY_MODULE D4
 #define LED_Red D5
