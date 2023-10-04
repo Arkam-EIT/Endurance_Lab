@@ -4,7 +4,7 @@
 #include <Keypad.h>
 #include <Wire.h>
 
-// Defines
+//Defines
 #define I2C_Addr 0x20                             // I2C Address of PCF8574-board: 0x20 - 0x27
 #define RELAY_MODULE D4
 #define LED_Red D5
@@ -54,7 +54,7 @@ Keypad_I2C i2cKeypad( makeKeymap(KeyPadLayout), PinsLines, PinsColumns, rows, co
 
 //Setup
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   pinMode(RELAY_MODULE, OUTPUT);
   pinMode(LED_Red, OUTPUT);
@@ -96,13 +96,17 @@ void setup() {
 //Main-Loop
 void loop() {
   //Logic
+  // Calculate the singleCycleTime
   singleCycleTime = MILLIS_PER_MINUTE / cyclesPerMinute;
 
+  // When the user press the push button, the timer need to start.
+  // But for now we've made it by default true.
   startFlag = true; // Will get these value from push button.
   if (startFlag == true) {
     currentTime = millis();
   }
 
+  // Calculate the Estimated time for debugging Purpose.
   OverallTime = singleCycleTime * noOfCycles;
   estimatedTime = OverallTime;
   unsigned long estimatedSecs = estimatedTime / 1000;
@@ -113,6 +117,7 @@ void loop() {
   char et_buf[14];
   sprintf(et_buf, "%02d:%02d:%02d", et_runHours, et_runMinutes, et_runSeconds);
 
+   // Calculate the Elapsed time for debugging Purpose.
   elapsedTime = currentTime;
   unsigned long elapsedSecs = elapsedTime / 1000;
   int e_runHours = elapsedSecs / 3600;
@@ -122,21 +127,33 @@ void loop() {
   char e_buf[14];
   sprintf(e_buf, "%02d:%02d:%02d", e_runHours, e_runMinutes, e_runSeconds);
 
+  // By default the cycle will start from 1.
   int cycle = 1;
   while (cycle <= noOfCycles && cycleCount < noOfCycles) {
+    // if the millis > sinpleCycle time make the relay turn on
     if (millis() >= (timeNow + singleCycleTime))  {
-      timeNow += singleCycleTime;
+      timeNow += singleCycleTime; // Update the previous time to current time
+      
+      // Code to Control Relay - Turn On
       digitalWrite(RELAY_MODULE, LOW);
       digitalWrite(LED_Yellow, HIGH);
       //digitalWrite(BUZZER, HIGH);
+
       delay(2000); // Relay Active Time
+
+      // Update the Cycle count
       cycleCount++;
       remainingCycleCount = noOfCycles - cycleCount;
     }
+
+    // Increment the cycle Count
     cycle++;
+
+    // Turn Off the Relay
     digitalWrite(RELAY_MODULE, HIGH);
     digitalWrite(LED_Yellow, LOW);
     //digitalWrite(BUZZER, LOW);
+
     delay(singleCycleTime);
 
     serialLog();
