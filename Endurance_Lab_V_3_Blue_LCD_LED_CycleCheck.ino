@@ -54,7 +54,7 @@ Keypad_I2C i2cKeypad( makeKeymap(KeyPadLayout), PinsLines, PinsColumns, rows, co
 
 //Setup
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   pinMode(RELAY_MODULE, OUTPUT);
   pinMode(LED_Red, OUTPUT);
