@@ -1,10 +1,10 @@
-//Final Code Endurance Lab V.3
+// Final Code Endurance Lab V.3
 #include <LiquidCrystal_I2C.h>
 #include <Keypad_I2C.h>
 #include <Keypad.h>
 #include <Wire.h>
 
-//Defines
+// Defines
 #define I2C_Addr 0x20                             // I2C Address of PCF8574-board: 0x20 - 0x27
 #define RELAY_MODULE D4
 #define LED_Red D5
@@ -37,7 +37,7 @@ int remainingCycleCount;
 boolean startFlag = false;
 boolean processStartFlag = false;
 
-//Layout of the Keys on Keypad
+// Layout of the Keys on Keypad
 char KeyPadLayout[rows][columns] = {
   {'1', '2', '3', 'A'},
   {'4', '5', '6', 'B'},
@@ -45,14 +45,14 @@ char KeyPadLayout[rows][columns] = {
   {'*', '0', '#', 'D'}
 };
 
-//Wiring of PCF8574-IO-Pins
+// Wiring of PCF8574-IO-Pins
 byte PinsLines[rows] = { 3, 2, 1, 0};          //  ROWS Pins
 byte PinsColumns[columns] = {7, 6, 5, 4};      //  COLUMNS Pins
 
-//Initialise KeyPad
+// Initialise KeyPad
 Keypad_I2C i2cKeypad( makeKeymap(KeyPadLayout), PinsLines, PinsColumns, rows, columns, I2C_Addr);
 
-//Setup
+// Setup
 void setup() {
   Serial.begin(115200);
 
@@ -93,9 +93,9 @@ void setup() {
   startProcessMsg();
 }
 
-//Main-Loop
+// Main-Loop
 void loop() {
-  //Logic
+  // Logic
   // Calculate the singleCycleTime
   singleCycleTime = MILLIS_PER_MINUTE / cyclesPerMinute;
 
@@ -117,7 +117,7 @@ void loop() {
   char et_buf[14];
   sprintf(et_buf, "%02d:%02d:%02d", et_runHours, et_runMinutes, et_runSeconds);
 
-   // Calculate the Elapsed time for debugging Purpose.
+  // Calculate the Elapsed time for debugging Purpose.
   elapsedTime = currentTime;
   unsigned long elapsedSecs = elapsedTime / 1000;
   int e_runHours = elapsedSecs / 3600;
@@ -130,7 +130,7 @@ void loop() {
   // By default the cycle will start from 1.
   int cycle = 1;
   while (cycle <= noOfCycles && cycleCount < noOfCycles) {
-    // if the millis > sinpleCycle time make the relay turn on
+    // if millis > singleCycleTime make the relay turn on
     if (millis() >= (timeNow + singleCycleTime))  {
       timeNow += singleCycleTime; // Update the previous time to current time
       
@@ -164,7 +164,7 @@ void loop() {
 }
 
 void serialLog() {
-  //Logs in Serial Monitor for testing
+  // Logs in Serial Monitor for testing
   Serial.print("Total No. of Cycles : ");
   Serial.println(noOfCycles);
   Serial.print("Cycles Per Minute : ");
@@ -173,10 +173,10 @@ void serialLog() {
   Serial.println(cycleCount);
   Serial.print("No. of Cycles remaining : ");
   Serial.println(remainingCycleCount);
-  //  Serial.print("Estimated time : ");
-  //  Serial.println(et_buf);
-  //  Serial.print("Elapsed time : ");
-  //  Serial.println(e_buf);
+  //Serial.print("Estimated time : ");
+  //Serial.println(et_buf);
+  //Serial.print("Elapsed time : ");
+  //Serial.println(e_buf);
   Serial.println();
 }
 
